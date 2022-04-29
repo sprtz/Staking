@@ -6,7 +6,7 @@ dotenv.config();
 
 async function main() {
   
-  const lpAddress = process.env.LP_TOKEN_ADDRESS as string || "";
+  const lpAddress = process.env.LPTOKEN_ADDRESS as string || "";
   const tokenAddress = process.env.TOKEN_ADDRESS as string || "";
 
   const stakingContractFactory = await ethers.getContractFactory("SimplyStaking");

@@ -1,9 +1,8 @@
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
-import { Contract } from "ethers";
 import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { SPR20, IWETH, SimplyStaking, IUniswapV2Pair, IUniswapV2Factory, IUniswapV2Router02 } from "../typechain";
+import { SPR20, SimplyStaking, IUniswapV2Pair, IUniswapV2Factory, IUniswapV2Router02 } from "../typechain";
 
 
 
@@ -32,7 +31,6 @@ describe("SimplyStaking", function () {
     
       const router = <IUniswapV2Router02>(await ethers.getContractAt("IUniswapV2Router02", process.env.ROUTER_ADDRESS as string));
       const factory = <IUniswapV2Factory>(await ethers.getContractAt("IUniswapV2Factory", process.env.FACTORY_ADDRESS as string));
-      const iweth = <IWETH>(await ethers.getContractAt("IWETH", process.env.WETH_ADDRESS as string));
 
 
       const anotherTokensAmount = ethers.BigNumber.from(1000000);
@@ -42,7 +40,6 @@ describe("SimplyStaking", function () {
       lpTokensAmount = squareRoot.sub(minLiquidity);
 
 
-      await iweth.connect(staker).deposit({ value: ethers.utils.parseEther("1") });
       await token.mint(staker.address, 100000);
       await token.connect(staker).approve(router.address, 100000);
     
@@ -85,7 +82,7 @@ describe("SimplyStaking", function () {
     it("Should revert if user not an admin", async () => {
         const rewardRate: number = 15;
         const promise = anotherStake.connect(staker).setRewardRate(rewardRate);
-        await expect(promise).to.be.revertedWith("AccessControl: account 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 is missing role 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775");
+        await expect(promise).to.be.revertedWith(`AccessControl: account ${staker.address.toLowerCase()} is missing role 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775`);
     });
 
 
@@ -103,7 +100,7 @@ describe("SimplyStaking", function () {
     it("Should revert if user not an admin", async () => {
         const rewardTime = 3 * 60;
         const promise = anotherStake.connect(staker).setUnavailableTime(rewardTime);
-        await expect(promise).to.be.revertedWith("AccessControl: account 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 is missing role 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775");
+        await expect(promise).to.be.revertedWith(`AccessControl: account ${staker.address.toLowerCase()} is missing role 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775`);
     });
 
     it("Should set reward unavailable time", async () => {
@@ -120,7 +117,7 @@ describe("SimplyStaking", function () {
     it("Should revert if user not an admin", async () => {
         const unstakeTime = 6 * 60;
         const promise =  anotherStake.connect(staker).setUnstakeTime(unstakeTime);
-        await expect(promise).to.be.revertedWith("AccessControl: account 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 is missing role 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775");
+        await expect(promise).to.be.revertedWith(`AccessControl: account ${staker.address.toLowerCase()} is missing role 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775`);
     });
 
     it("Should set unstake lock time", async () => {

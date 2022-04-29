@@ -18,7 +18,7 @@ contract SimplyStaking is AccessControl {
 
 
     uint public unstakeTime = 12 * 1 minutes; 
-    uint public rewardTime = 6 * 1 minutes;
+    uint public rewardTime = 12 * 1 minutes;
     uint public rewardRate = 10; 
 
     mapping(address => StakingInfo) private _balances;
@@ -124,9 +124,6 @@ contract SimplyStaking is AccessControl {
         uint reward = userStake.availableReward;
         userStake.availableReward = 0;
 
-        require(
-            reward > 0,
-            "Not enough tokens to withdraw");
 
         if (isAvailable(userStake.lastTickDate, rewardTime)) {
             unchecked {
@@ -134,6 +131,10 @@ contract SimplyStaking is AccessControl {
                 userStake.unavailableReward = 0;
             }
         }
+
+        require(
+            reward > 0,
+            "Not enough tokens to withdraw");
 
         rewardsToken.safeTransfer(msg.sender, reward);
         emit Claim(msg.sender, reward);
